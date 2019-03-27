@@ -17,13 +17,16 @@ public:
     GLint program;
     glm::mat4 modelMatrix;
     GLint positionLocation,colorLoction,viewMatrixLocation,projectMatrixLocation,modelMatrixLocation,mTexcoordLocation,mNormalLocation,U_textureLoacation;
+    GLint U_LightAmbientLocation,U_LightPosLocation,U_CameraPosLocation,U_LightDiffuseLocation,U_LightSpecularLocation,U_AmbientMaterialLocation,U_DiffuseMaterialLocation;
+    GLint U_SpecularMaterialLocation,U_OptionLocation,IT_ModelMatrixLocation;
     GLint texture;
     glm::vec3 position = glm::vec3(0.0f ,0.0f ,0.0f);
 public:
     model();
+    void setLightArgs(glm::vec4 cameraPos);
     void InitModel(const char*modelFilePath,const char*textureImagePath);
-    void Bind( glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
-    void Draw(glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
+    void Bind( glm::vec4 cameraPos,glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
+    void Draw( glm::vec4 cameraPos ,glm::mat4 viewMatrix,glm::mat4 projectionMatrix);
     void CreateModelProgram(const char * vsPath , const char * fsPath);
 
     void translateMode(glm::vec3 vec , float v);

@@ -1,29 +1,8 @@
 
-#include "ggl.h"
-#include "scene.h"
-#include "utils.h"
+#include "common/ggl.h"
+#include "threeeD/scene.h"
+#include "common/utils.h"
 
-
-// 启用全局变量，声明在ggl.h 里面
-
-//unsigned char * LoadFileContent(const char *path , int &filesSize){
-//
-//    unsigned char * fileContent = nullptr;
-//    filesSize = 0 ;
-//    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
-//    if(asset== nullptr){
-//        LOGE("LoadFileContent asset is null, load shader error ");
-//        return  nullptr;
-//    }
-//    filesSize = AAsset_getLength(asset);
-//    fileContent = new unsigned char[filesSize];
-//    AAsset_read(asset , fileContent,filesSize);
-//    fileContent[filesSize]='\0';
-//    AAsset_close(asset);
-//    LOGE("LoadFileContent success ...%s",path);
-//    return fileContent;
-//
-//}
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lammy_openglstudy_Native_InitAssetManager(JNIEnv *env, jclass type, jobject am) {

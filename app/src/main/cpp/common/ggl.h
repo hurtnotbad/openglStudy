@@ -2,9 +2,8 @@
 // Created by zhangpeng30 on 2019/3/19.
 //
 
-#ifndef OPENGLSTUDY_GGL_H
-#define OPENGLSTUDY_GGL_H
 
+#pragma
 #include <jni.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -18,7 +17,9 @@
 #include <vector>
 #include <functional>
 #include <map>
-#include "glm/glm/glm.hpp"
+#include "glm.hpp"
+#include "ext.hpp"
+#include "gtc/matrix_transform.hpp"
 
 extern AAssetManager* aAssetManager;
 
@@ -36,5 +37,5 @@ extern AAssetManager* aAssetManager;
 
 #endif
 
-#endif //OPENGLSTUDY_GGL_H
+
 

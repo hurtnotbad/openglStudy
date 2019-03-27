@@ -9,8 +9,6 @@ varying vec2 V_Texcoord;
 * 也是多个块 运算的 并行运算
 */
 void main() {
-
-//    gl_FragColor= vec4(V_Texcoord.x, V_Texcoord.y , 0.0, 1.0);
     gl_FragColor = texture2D(U_texture, V_Texcoord);
-//    gl_FragColor=  texture2D(U_texture, V_Texcoord);
+
 }

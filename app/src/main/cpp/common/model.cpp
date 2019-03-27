@@ -6,8 +6,8 @@
 #include <sstream>
 #include <cstdlib>
 #include "ggl.h"
-#include "glm/glm/gtc/type_ptr.inl"
-#include "glm/glm/gtc/matrix_transform.hpp"
+//#include "glm/glm/gtc/type_ptr.inl"
+
 model::model() {
 
 }
@@ -207,9 +207,6 @@ void model::InitModel(const char*modelFilePath,const char*textureImagePath) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*size, indexes,GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , 0);
 
-//    for(int i = 0 ; i < size ; i ++){
-//        LOGE(" indexes[ %d] = %d  " , i, indexes[i]);
-//    }
 
     mIndexCount = vertexIndex_Indexs.size();
     LOGE(" mIndexCount = %d  " , mIndexCount);
@@ -221,7 +218,7 @@ void model::InitModel(const char*modelFilePath,const char*textureImagePath) {
 //    glBufferSubData(GL_ARRAY_BUFFER,0,sizeof(Vertex)*mVertexCount,mVertexes);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    CreateModelProgram("model/earth_vs.glsl","model/earth_fs.glsl");
+    CreateModelProgram("model/earth_vs2.glsl","model/earth_fs2.glsl");
     mTexcoordLocation=glGetAttribLocation(program,"texcoord");
     positionLocation = glGetAttribLocation(program, "position");
     //colorLoction = glGetAttribLocation(program, "color");
@@ -230,23 +227,60 @@ void model::InitModel(const char*modelFilePath,const char*textureImagePath) {
     viewMatrixLocation = glGetUniformLocation(program , "ViewMatrix");
     projectMatrixLocation = glGetUniformLocation(program , "ProjectionMatrix");
 
-    projectMatrixLocation = glGetUniformLocation(program , "ProjectionMatrix");
+    // 光照相关
+    U_LightPosLocation = glGetUniformLocation(program , "U_LightPos");
+    U_CameraPosLocation = glGetUniformLocation(program , "U_CameraPos");
 
+    U_LightAmbientLocation = glGetUniformLocation(program , "U_LightAmbient");
+    U_LightDiffuseLocation = glGetUniformLocation(program , "U_LightDiffuse");
+    U_LightSpecularLocation = glGetUniformLocation(program , "U_LightSpecular");
+
+    U_AmbientMaterialLocation = glGetUniformLocation(program , "U_AmbientMaterial");
+    U_DiffuseMaterialLocation = glGetUniformLocation(program , "U_DiffuseMaterial");
+    U_SpecularMaterialLocation = glGetUniformLocation(program , "U_SpecularMaterial");
+
+    U_OptionLocation = glGetUniformLocation(program , "U_Option");
+    //法向量
     mNormalLocation=glGetAttribLocation(program,"normal");
+
+    IT_ModelMatrixLocation = glGetUniformLocation(program , "IT_ModelMatrix");
     if(textureImagePath != nullptr && textureImagePath != "") {
         texture = CreateTextureFromBMP(textureImagePath);
     }
 
 }
-void model::Bind( glm::mat4 viewMatrix,glm::mat4 projectionMatrix)
-{
 
+void model::setLightArgs(glm::vec4 cameraPos){
+
+    glUniform4fv(U_LightPosLocation , 1 ,glm::value_ptr(glm::vec4(0.0f,10.0f,10.0f,0.0f) ));
+    glUniform4fv(U_CameraPosLocation,1,glm::value_ptr(cameraPos));
+
+
+    glUniform4fv(U_LightAmbientLocation , 1 ,glm::value_ptr(glm::vec4(0.4f,0.4f,0.0f,1.0f)) );
+    glUniform4fv(U_LightDiffuseLocation,1,glm::value_ptr(glm::vec4(0.5f,0.50f,0.0f,1.0f)));
+    glUniform4fv(U_LightSpecularLocation,1,glm::value_ptr(glm::vec4(1.0f,1.0f,1.0f,1.0f)));
+
+    glUniform4fv(U_OptionLocation,1,glm::value_ptr(glm::vec4(1.0f,0.0f,0.0f,0.0f)));
+
+    glUniform4fv(U_AmbientMaterialLocation,1,glm::value_ptr(glm::vec4(0.1f,0.1f,0.1f,1.0f)));
+    glUniform4fv(U_DiffuseMaterialLocation,1,glm::value_ptr(glm::vec4(0.6f,0.6f,0.6f,1.0f)));
+    glUniform4fv(U_SpecularMaterialLocation,1,glm::value_ptr(glm::vec4(1.0f,1.0f,1.0f,1.0f)));
+
+
+}
+
+
+//void model::Bind( glm::mat4 viewMatrix,glm::mat4 projectionMatrix)
+void model::Bind( glm::vec4 cameraPos ,glm::mat4 viewMatrix,glm::mat4 projectionMatrix)
+{
+    setLightArgs(cameraPos);
 //    modelMatrix= glm::translate(modelMatrix,glm::vec3(0.0f,0.0f,0.0f));
     glUseProgram(program);
     glUniformMatrix4fv(modelMatrixLocation,1,GL_FALSE,glm::value_ptr(modelMatrix));
     glUniformMatrix4fv(viewMatrixLocation,1,GL_FALSE,glm::value_ptr(viewMatrix));
     glUniformMatrix4fv(projectMatrixLocation,1,GL_FALSE,glm::value_ptr(projectionMatrix));
-
+    glm::mat4 it=glm::inverseTranspose(modelMatrix);
+    glUniformMatrix4fv(IT_ModelMatrixLocation, 1, GL_FALSE, glm::value_ptr(it));
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glEnableVertexAttribArray(positionLocation);
@@ -263,13 +297,14 @@ void model::Bind( glm::mat4 viewMatrix,glm::mat4 projectionMatrix)
     glUniform1i(U_textureLoacation,0);
 }
 
-void model::Draw( glm::mat4 viewMatrix,glm::mat4 projectionMatrix) {
+void model::Draw( glm::vec4 cameraPos ,glm::mat4 viewMatrix,glm::mat4 projectionMatrix) {
 
     glUseProgram(program);
     glEnable(GL_DEPTH_TEST);
+
     glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
     glUniformMatrix4fv(projectMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    Bind(viewMatrix, projectionMatrix);
+    Bind(cameraPos,viewMatrix, projectionMatrix);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 //    LOGE("mIndexCount = %d", mIndexCount);

@@ -11,8 +11,11 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 
-include_directories(${CMAKE_SOURCE_DIR}/src/cpp/glm)
-include_directories(${CMAKE_SOURCE_DIR}/src/cpp/glm/glm)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/glm)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/glm/glm)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/common)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/threeeD)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/twoD)
 
 add_library( # Sets the name of the library.
              native-lib
@@ -21,12 +24,13 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
+             src/main/cpp/common/ggl.cpp
              src/main/cpp/opengl.cpp
-             src/main/cpp/scene2.cpp
-             src/main/cpp/utils.cpp
-             src/main/cpp/model.cpp
-             src/main/cpp/ThreeDCoordinates.cpp
-             src/main/cpp/ggl.cpp
+             src/main/cpp/threeeD/scene2.cpp
+             src/main/cpp/common/utils.cpp
+             src/main/cpp/common/model.cpp
+             src/main/cpp/threeeD/ThreeDCoordinates.cpp
+
 
 
              )

@@ -4,9 +4,8 @@
 
 #include "ggl.h"
 #include "ThreeDCoordinates.h"
-#include "glm/glm/gtc/matrix_transform.hpp"
 #include "utils.h"
-#include "glm/glm/gtc/type_ptr.inl"
+
 
 ThreeDCoordinates::ThreeDCoordinates() {
 
