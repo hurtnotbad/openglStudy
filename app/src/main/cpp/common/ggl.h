@@ -21,7 +21,7 @@
 #include "ext.hpp"
 #include "gtc/matrix_transform.hpp"
 
-extern AAssetManager* aAssetManager;
+
 
 #define __DEBUG__ANDROID__ON
 //write debug images

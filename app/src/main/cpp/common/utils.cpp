@@ -1,24 +1,6 @@
 #include "utils.h"
 #include "ggl.h"
 
-unsigned char * LoadFileContent(const char *path , int &filesSize){
-
-    unsigned char * fileContent = nullptr;
-    filesSize = 0 ;
-    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
-    if(asset== nullptr){
-        LOGE("LoadFileContent asset is null, load shader error ");
-        return  nullptr;
-    }
-    filesSize = AAsset_getLength(asset);
-    fileContent = new unsigned char[filesSize];
-    AAsset_read(asset , fileContent,filesSize);
-    fileContent[filesSize]='\0';
-    AAsset_close(asset);
-    LOGE("LoadFileContent success ...%s",path);
-    return fileContent;
-
-}
 
 GLuint CompileShader(GLenum shaderType , const char * shaderCode){
 
@@ -64,6 +46,20 @@ GLuint CreateProgram(GLuint vsShader , GLuint fsShader){
     return program;
 }
 
+GLuint CreateProgram(const char * vsPath ,const char * fsPath){
+    LOGE("CreateProgram create");
+    int fileSize = 0;
+    unsigned  char * shaderCode = LoadFileContent(vsPath,fileSize);
+    GLuint vsShader = CompileShader(GL_VERTEX_SHADER,(char *)shaderCode);
+    delete shaderCode;
+    shaderCode = LoadFileContent(fsPath, fileSize);
+    GLint fsShader = CompileShader(GL_FRAGMENT_SHADER , (char *)shaderCode);
+    GLuint program = CreateProgram(vsShader , fsShader);
+    glDeleteShader(vsShader);
+    glDeleteShader(fsShader);
+    LOGE("CreateProgram create success");
+    return program;
+}
 GLuint CreateTexture2D(unsigned char *pixelData, int width, int height ,GLenum type){
     GLuint texture;
     glGenTextures(1 , &texture);
@@ -76,6 +72,20 @@ GLuint CreateTexture2D(unsigned char *pixelData, int width, int height ,GLenum t
     glTexImage2D(GL_TEXTURE_2D, 0 , type, width ,height, 0, type,GL_UNSIGNED_BYTE, pixelData);//GL_RGBA
     glBindTexture(GL_TEXTURE_2D, 0);
     return texture;
+}
+void CreateTexture2D( GLuint* textures ,int number ,unsigned char *pixelData, int width, int height ,GLenum type){
+    glGenTextures(number ,textures);
+    for(int i=0 ;i< number ; i++) {
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// 表示图像放大时候，使用线性过滤
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// 表示图像缩小时候，使用线性过滤
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE,
+                     pixelData);//GL_RGBA
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
 }
 
 unsigned  char* DecodeBMP(unsigned char * bmpFileData, int &width ,int &height){

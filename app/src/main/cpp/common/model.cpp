@@ -11,24 +11,24 @@
 model::model() {
 
 }
-char * LoadModelFile(AAssetManager* aAssetManager,const char *path , int &filesSize){
-
-     char * fileContent = nullptr;
-    filesSize = 0 ;
-    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
-    if(asset== nullptr){
-        LOGE("LoadFileContent asset is null, load shader error ");
-        return  nullptr;
-    }
-    filesSize = AAsset_getLength(asset);
-    fileContent = new char[filesSize + 1];
-    AAsset_read(asset , fileContent,filesSize);
-    fileContent[filesSize]='\0';
-    AAsset_close(asset);
-    //LOGE("LoadFileContent success ...%s",path);
-    return fileContent;
-
-}
+//char * LoadModelFile(const char *path , int &filesSize){
+//
+//     char * fileContent = nullptr;
+//    filesSize = 0 ;
+//    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
+//    if(asset== nullptr){
+//        LOGE("LoadFileContent asset is null, load shader error ");
+//        return  nullptr;
+//    }
+//    filesSize = AAsset_getLength(asset);
+//    fileContent = new char[filesSize + 1];
+//    AAsset_read(asset , fileContent,filesSize);
+//    fileContent[filesSize]='\0';
+//    AAsset_close(asset);
+//    //LOGE("LoadFileContent success ...%s",path);
+//    return fileContent;
+//
+//}
 
 unsigned int* vectorIntToArray(std::vector<unsigned int> array){
     int size = array.size();
@@ -65,7 +65,8 @@ void model::InitModel(const char*modelFilePath,const char*textureImagePath) {
 
     //load model from file
     int fileSize = 0;
-    char *fileContent = LoadModelFile(aAssetManager, modelFilePath, fileSize);
+//    char *fileContent = LoadModelFile( modelFilePath, fileSize);
+    char *fileContent = LoadFileContent( modelFilePath);
     LOGE("/***********************model start********************************/");
 //    LOGE("model = %s" , fileContent);
 //    LOGE("/***********************model voer********************************/");

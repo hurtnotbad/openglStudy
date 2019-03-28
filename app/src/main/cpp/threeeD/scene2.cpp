@@ -5,8 +5,6 @@
 #include "scene.h"
 #include "ggl.h"
 #include "utils.h"
-//#include "glm/glm/ext.hpp"
-//#include "glm/glm/detail/_noise.hpp"
 #include "ThreeDCoordinates.h"
 #include "model.h"
 

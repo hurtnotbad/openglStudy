@@ -2,6 +2,47 @@
 #include "common/ggl.h"
 #include "threeeD/scene.h"
 #include "common/utils.h"
+#include "drawer.h"
+AAssetManager* aAssetManager;
+drawer drawer1;
+int drawMode = 1;
+unsigned char * LoadFileContent(const char *path , int &filesSize){
+    unsigned char * fileContent = nullptr;
+    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
+    if(asset== nullptr){
+        LOGE("LoadFileContent asset is null, load shader error ");
+        return  nullptr;
+    }
+
+    filesSize = AAsset_getLength(asset);
+    fileContent = new unsigned char[filesSize];
+    AAsset_read(asset , fileContent,filesSize);
+    fileContent[filesSize]='\0';
+    AAsset_close(asset);
+    LOGE("LoadFileContent success ...%s",path);
+    return fileContent;
+
+}
+
+char * LoadFileContent(const char *path ){
+    int filesSize = 0;
+    char * fileContent = nullptr;
+    AAsset * asset = AAssetManager_open(aAssetManager, path , AASSET_MODE_UNKNOWN);
+    if(asset== nullptr){
+        LOGE("LoadFileContent asset is null, load shader error ");
+        return  nullptr;
+    }
+    filesSize = AAsset_getLength(asset);
+    fileContent = new  char[filesSize];
+    AAsset_read(asset , fileContent,filesSize);
+    fileContent[filesSize]='\0';
+    AAsset_close(asset);
+    LOGE("LoadFileContent success ...%s",path);
+    return fileContent;
+
+}
+
+
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -13,16 +54,26 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lammy_openglstudy_Native_InitOpenGL(JNIEnv *env, jclass type) {
 
-//    glClearColor(0.1 , 0.4,0.6 , 1);
-    Init();
- //   InitModel(aAssetManager , "model/Cube.obj" );
-}extern "C"
+   switch (drawMode){
+       case 0:
+           Init();
+           break;
+       case 1:
+           drawer1.Init();
+       }
+}
+extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lammy_openglstudy_Native_OnViewportChanged(JNIEnv *env, jclass type, jfloat width,
                                                             jfloat height) {
-//    glViewport(0,0,width ,height);
-    SetViewPortSize(width ,height);
 
+    switch (drawMode){
+        case 0:
+            SetViewPortSize(width ,height);
+            break;
+        case 1:
+            drawer1.SetViewPortSize(width ,height);
+    }
 }
 
 float GetFrameTime(){
@@ -40,6 +91,11 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lammy_openglstudy_Native_RenderOneFrame(JNIEnv *env, jclass type) {
 
-//    glClear(GL_COLOR_BUFFER_BIT);
-    Draw();
+    switch (drawMode){
+        case 0:
+            Draw();
+            break;
+        case 1:
+            drawer1.Draw();
+    }
 }

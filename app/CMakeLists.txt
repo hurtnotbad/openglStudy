@@ -16,6 +16,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/glm/glm)
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/common)
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/threeeD)
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/twoD)
+include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp/twoD/include)
 
 add_library( # Sets the name of the library.
              native-lib
@@ -30,6 +31,11 @@ add_library( # Sets the name of the library.
              src/main/cpp/common/utils.cpp
              src/main/cpp/common/model.cpp
              src/main/cpp/threeeD/ThreeDCoordinates.cpp
+             src/main/cpp/twoD/fbo.cpp
+             src/main/cpp/twoD/noFilter.cpp
+             src/main/cpp/twoD/drawer.cpp
+             src/main/cpp/twoD/grayFilter.cpp
+             src/main/cpp/twoD/gaussFilter.cpp
 
 
 

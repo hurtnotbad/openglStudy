@@ -18,7 +18,7 @@ class LammyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 //        gl.glViewport(0,0,width ,height);
-        Log.loge("onSurfaceChanged ...........");
+        Log.loge("onSurfaceChanged ..........."+width+" "+height);
         Native.OnViewportChanged((float)width ,(float) height);
     }
 
